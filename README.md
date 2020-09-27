@@ -230,19 +230,15 @@ oc rsh <pod id>
 oc set resources deploy/meu-app --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
 ```
 
-* acessar o POD via terminal
- * bash shell bomb
+* criar novo arquivo forkbomb.php
 
+```php
+<?php
+$output = shell_exec("while :; do _+=( $((++__)) ); done");
+?>
 ```
-while :; do _+=( $((++__)) ); done
-```
-
-* ssh no Node do OCP onde o POD foi provisionado
-
- ```
- docker ps | grep <pod id> | grep entrypoint
- docker stats <container id>
- ```
+* Acessar url do arquivo forkbomb.php
+* Acompanhar uso de recursos via console
 
  * Esperar ele matar o container
  * Observe as métricas na console do POD!
