@@ -250,11 +250,12 @@ oc delete po <pod>
 ## 9) Auto scaling
 
 * add auto scaler pela console
-  * `Application > Deployments > [dc id] > Actions > Add Autoscaler`
 	 * min 1
 	 * max 5
 	 * CPU request 20%
-
+```
+oc autoscale deploy/meu-app --min 1 --max 5 --cpu-percent=20
+```
 * inicia stress test usando `ab`:
  * se precisar instalar
 
