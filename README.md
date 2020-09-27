@@ -140,7 +140,6 @@ git clone --single-branch --branch minhabranch https://github.com/ggianini/minha
 ```
     oc rsync --exclude '.git' . pod-id:/opt/app-root/src --no-perms -w
 ```
- * Stop rsync: `Ctrl + c`
 
 ## 6) Health Check e Debug
 
@@ -164,9 +163,14 @@ $filename = '/tmp/liveness';
 if (file_exists($filename)) {
     header("HTTP/1.1 500 Internal Server Error");
 } else {
-    echo "Estou vivo! \n Essa mensagem significa que a aplicação está saudável. \n Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá deletar o pod";
+        echo "Estou vivo!";
+        echo "<br><hr>";
+        echo "Essa mensagem significa que a aplicação está saudável.";
+        echo "<br><hr>";
+        echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá deletar o pod";
 }
 ?>
+
 ```
 
 ### 6.2 readiness
@@ -182,7 +186,11 @@ $filename = '/tmp/readiness';
 if (file_exists($filename)) {
     header("HTTP/1.1 500 Internal Server Error");
 } else {
-    echo "Estou pronto! \n Essa mensagem significa que a aplicação está pronta para ser inserida no balanceador. \n Caso essa URL devolva um erro 500, significa que o readiness falhou. Nesse caso o OpenShift irá remover a aplicação do balanceamento";
+        echo "Estou pronto!";
+        echo "<br><hr>";
+        echo "Essa mensagem significa que a aplicação está pronta para ser inserida no balanceamento.";
+        echo "<br><hr>";
+        echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá remover a aplicação do balanceador.";
 }
 ?>
 ```
@@ -192,13 +200,6 @@ oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
 ```
 oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
 ```
-
-
-* git add and commit
-* Adicionar health check pela console
- * `/readiness.php`
- * `/liveness.php`
-
 
 * Fazer debug do container com readiness
  * acessar um dos PODs
@@ -212,8 +213,6 @@ oc rsh <pod id>
  * observar Página Overview do projeto na console do ocp
 
  * Criar /tmp/liveness
-
-* Trocar versão para 3.0 no index.php
 
 ## 7) Idle resources
 
