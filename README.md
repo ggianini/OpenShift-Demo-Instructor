@@ -52,8 +52,8 @@ oc delete pod --force <id1> <id2>
 
 ## 4) Criar um banco de dados
 
-* MySQL Ephemeral
-* Criar banco no openshift
+* MySQL
+* Criar DB no openshift
 
 ```
 The following service(s) have been created in your project: mysql.
