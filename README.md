@@ -192,9 +192,12 @@ if (file_exists($filename)) {
 }
 ?>
 ```
-
+```
 oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
+```
+```
 oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
+```
 
 
 * git add and commit
