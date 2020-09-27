@@ -56,14 +56,10 @@ oc delete pod --force <id1> <id2>
 * Criar DB no openshift
 
 ```
-The following service(s) have been created in your project: mysql.
-
        Username: redhat
        Password: redhat
   Database Name: sampledb
  Connection URL: mysql://mysql:3306/
-
-For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/5.7/README.md.
 ```
 
 * Agrupar banco de dados com app
@@ -138,6 +134,9 @@ $conn->close();
 
  * git clone localmente e fazer alterações
 
+git clone --single-branch --branch minhabranch https://github.com/ggianini/minhademo.git
+
+
 ```
     oc rsync --exclude '.git' . pod-id:/opt/app-root/src --no-perms -w
 ```
@@ -192,6 +191,7 @@ if (file_exists($filename)) {
     echo "Caso essa URL devolva um erro 500, significa que o readiness falhou. Nesse caso o OpenShift irá retirar o pod do balanceador";
 }
 ?>
+```
 
 oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
 oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
