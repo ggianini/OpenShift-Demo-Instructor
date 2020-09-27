@@ -165,7 +165,10 @@ $filename = '/tmp/liveness';
 if (file_exists($filename)) {
     header("HTTP/1.1 500 Internal Server Error");
 } else {
-    echo "Ok";
+    echo "Estou vivo!";
+    echo "";
+    echo "Essa mensagem significa que a aplicação está saudável.";
+    echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá deletar o pod";
 }
 ?>
 ```
@@ -183,10 +186,16 @@ $filename = '/tmp/readiness';
 if (file_exists($filename)) {
     header("HTTP/1.1 500 Internal Server Error");
 } else {
-    echo "Ok";
+    echo "Estou pronto!";
+    echo "";
+    echo "Essa mensagem significa que a aplicação está pronta para ser balanceada.";
+    echo "Caso essa URL devolva um erro 500, significa que o readiness falhou. Nesse caso o OpenShift irá retirar o pod do balanceador";
 }
 ?>
-```
+
+oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
+oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
+
 
 * git add and commit
 * Adicionar health check pela console
