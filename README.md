@@ -221,17 +221,14 @@ oc rsh <pod id>
  * observar status dos PODs na console
  * Acessar a URL da app
 
-## Deploy docker image
-
-Add to Project > Deploy Image > Image Name: "sonatype/nexus3"
-
 ## 8) Resource Quotas
 
 * Escalar para 1
 * Colocar limit e request de memoria e cpu
- * `Application > Deployments > [dc id] > Actions > Edit Resource Limits`
- * cpu: 200m
- * memoria: 100m
+
+ ```
+oc set resources deploy/meu-app --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
+```
 
 * acessar o POD via terminal
  * bash shell bomb
