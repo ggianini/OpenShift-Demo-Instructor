@@ -197,6 +197,17 @@ if (file_exists($filename)) {
 ```
 oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
 ```
+
+Ou via interface gráfica:
+
+/readiness.php
+8080
+3 1 null 10 1
+
+/liveness.php
+8080
+3 1 20 10 1
+
 ```
 oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
 ```
@@ -254,7 +265,7 @@ oc delete po <pod>
 	 * max 5
 	 * CPU request 20%
 ```
-oc autoscale deploy/meu-app --min 1 --max 5 --cpu-percent=20
+oc autoscale deploy/meu-app --min 1 --max 3 --cpu-percent=10
 ```
 * inicia stress test usando `ab`:
  * se precisar instalar
