@@ -31,7 +31,7 @@ echo $_SERVER['SERVER_ADDR']
 * Mostrar o balanceamento de carga
  * via curl
 ```bash
-		while [ true ]; do curl http://myphp-php-demo.apps.ocp.acme.com/; sleep 1; echo; done
+while [ true ]; do curl http://myphp-php-demo.apps.ocp.acme.com/; sleep 1; echo; done
 ```
 
 ```
