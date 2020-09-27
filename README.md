@@ -195,7 +195,7 @@ if (file_exists($filename)) {
 ?>
 ```
 ```
-oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
+oc set probe dc/meu-app --readiness --get-url=http://:8080/readiness.php
 ```
 
 Ou via interface gráfica:
@@ -209,7 +209,7 @@ Ou via interface gráfica:
 3 1 20 10 1
 
 ```
-oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
+oc set probe dc/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
 ```
 
 * Fazer debug do container com readiness
@@ -238,7 +238,7 @@ oc rsh <pod id>
 * Colocar limit e request de memoria e cpu
 
  ```
-oc set resources deploy/meu-app --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
+oc set resources dc/meu-app --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
 ```
 
 * criar novo arquivo forkbomb.php
@@ -265,7 +265,7 @@ oc delete po <pod>
 	 * max 5
 	 * CPU request 20%
 ```
-oc autoscale deploy/meu-app --min 1 --max 3 --cpu-percent=10
+oc autoscale dc/meu-app --min 1 --max 3 --cpu-percent=10
 ```
 * inicia stress test usando `ab`:
  * se precisar instalar
