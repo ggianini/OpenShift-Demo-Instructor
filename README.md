@@ -7,9 +7,9 @@
   * [MSA](https://cdn.rawgit.com/redhat-helloworld-msa/helloworld-msa)
 
 
-## 1) Criar código da app e colocar no gogs
+## 1) Criar código da app e colocar no github
 
-* criar um novo projeto no Git
+* criar um novo repositório no Git
 
 adicionar o arquivo index.php
 
@@ -62,13 +62,6 @@ oc delete pod --force <id1> <id2>
  Connection URL: mysql://mysql:3306/
 ```
 
-* Agrupar banco de dados com app
-
- * Port forward
-```
-	oc login ocp-master.example.com:8443
-	oc port-forward <pod id> 3306:3306
-```
 
  * Alterando autenticação
 ```
@@ -79,7 +72,7 @@ ALTER USER 'redhat' IDENTIFIED WITH mysql_native_password BY 'redhat';
  * Importar a tabela sql
 
 ```
-mysql -u admin -h 127.0.0.1 -p
+mysql -u admin -h 127.0.0.1 -p redhat
 
 SHOW DATABASES;
 USE sampledb;
@@ -96,8 +89,7 @@ INSERT INTO cidade (id,nome) VALUES(3,"Vitoria");
 
 SELECT * FROM cidade;
 ```
-
-## 5) Rsync e Webhook
+## 5) Webhook e Rsync
 
 ### 5.1) Webhook
 
@@ -258,35 +250,28 @@ $output = shell_exec("while :; do _+=( $((++__)) ); done");
 oc delete po <pod>
 ```
 
-## 9) Auto scaling
+## 9) Auto scaling de deploymentconfig
 
-* add auto scaler pela console
-	 * min 1
-	 * max 5
-	 * CPU request 20%
+* add auto scaler
+
 ```
-oc autoscale dc/meu-app --min 1 --max 3 --cpu-percent=10
+oc autoscale dc/meu-app --min 1 --max 10 --cpu-percent=10
 ```
-* inicia stress test usando `ab`:
- * se precisar instalar
 
- ```
- sudo yum install httpd-tools
- ```
+* inicia stress
 
- * disparar a carga
-
- ```
- ab -q -n 100000 -c 50 <url>
- ```
-
-* ou JMeter
- * Thread Group com 150 threads
- * Loop 670
+```
+oc run --generator=run-pod/v1 -it --rm load-generator --image=busybox /bin/sh
+```
+```
+while true; do wget -q -O- <url>; done
+```
 
 * `oc delete hpa app`
 
-## 10) Rollback
+## 10) Monitoramento e Logging
+
+## 11) Rollback
 
 * Introduzir bug na app:
 
@@ -317,7 +302,7 @@ git push --force origin master
 
  * Iniciar deploy via DC manual!
 
-## 11) A/B Testing
+## 12) A/B Testing
 
 * Desagrupar o banco (opcional)
 * Criar branch no git
@@ -346,7 +331,7 @@ git checkout -b novaversao
 	* Escalar um pod para cada lado
 	* Alterar a porcentagem de cada um
 
-## 12) Blue Green Deployment
+## 13) Blue Green Deployment
 
 * Remover ab testing
 * alterar as cores (blue, green)
@@ -356,7 +341,7 @@ git checkout -b novaversao
 
 * Remover versão 3
 
-## 13) Security com ImageStream **<<<< PRECISA SER MAIS DETALHADO!!!!**
+## 14) Security com ImageStream **<<<< PRECISA SER MAIS DETALHADO!!!!**
 
 * Criar imagem docker do php
 * Fazer push para o registry
@@ -364,9 +349,9 @@ git checkout -b novaversao
 * Criar o build config com base na imagem anterior
 * Executar o build config
 
-## 14) Jenkins CI/CD
+## 15) Jenkins CI/CD
 
-### 14.1) Pipeline para app PHP **<<<< MELHOR CONVERTER ISSO NUM TEMPLATE (YAML OU JSON)**
+### 15.1) Pipeline para app PHP **<<<< MELHOR CONVERTER ISSO NUM TEMPLATE (YAML OU JSON)**
 
 ```
 node('maven') {
@@ -438,7 +423,7 @@ spec:
       jenkinsfilePath: ""
 ```
 
-### 14.2) Pipeline para app JavaEE (Wildfly)
+### 15.2) Pipeline para app JavaEE (Wildfly)
 
 * **JavaEE/Maven Pipeline**: https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline
 
@@ -470,7 +455,7 @@ spec:
 * Inicie um novo Pipeline
 * Abra a URL da app e veja o resultado
 
-### 14.3) Pipeline para app JavaEE com Integration tests, Staging e Approval workflow
+### 15.3) Pipeline para app JavaEE com Integration tests, Staging e Approval workflow
 
 * criar novo projeto: `jboss-kitchensink-cicd`
 * clonar o projeto `https://github.com/rafaeltuelho/jboss-kitchensink.git` no seu host local
@@ -506,21 +491,21 @@ oc expose demo-swarm
 mvn fabric8:deploy
 ```
 
-## 15) Evacuate
+## 16) Evacuate
 
 ```
 oadm manage-node ocp-node01.example.com --evacuate --dry-run
 ```
 
-## 16) Cockpit
+## 17) Cockpit
 
 * Acessar: https://ocp-master.example.com:9090
 
-## 17) Cloud Forms
+## 18) Cloud Forms
 
 * Acessar: https://ocp-master.example.com:9090
 
-## 18) Registry Console
+## 19) Registry Console
 
 * Ver url por meio do comando
 ```
