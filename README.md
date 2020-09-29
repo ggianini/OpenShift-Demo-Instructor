@@ -4,7 +4,6 @@
 
   * [Repositorio com varias demos](https://github.com/redhat-developer-demos)
   * [Deploy](https://docs.google.com/presentation/d/1rtbk08RyuVxkFHhfMhAFb6FooMWLXrwDmhgLgcG8ML8)
-  * [MSA](https://cdn.rawgit.com/redhat-helloworld-msa/helloworld-msa)
 
 
 ## 1) Criar código da app e colocar no github
