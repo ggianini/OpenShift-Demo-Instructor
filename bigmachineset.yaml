@@ -1,0 +1,67 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/GPU: '0'
+    machine.openshift.io/memoryMb: '32768'
+    machine.openshift.io/vCPU: '8'
+  name: mpto-fpjwc-worker-us-east-2a-big
+  generation: 3
+  namespace: openshift-machine-api
+  labels:
+    machine.openshift.io/cluster-api-cluster: mpto-fpjwc
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: mpto-fpjwc
+      machine.openshift.io/cluster-api-machineset: mpto-fpjwc-worker-us-east-2a-big
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: mpto-fpjwc
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: mpto-fpjwc-worker-us-east-2a-big
+    spec:
+      metadata: {}
+      providerSpec:
+        value:
+          userDataSecret:
+            name: worker-user-data
+          placement:
+            availabilityZone: us-east-2a
+            region: us-east-2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          instanceType: m4.2xlarge
+          metadata:
+            creationTimestamp: null
+          blockDevices:
+            - ebs:
+                encrypted: true
+                iops: 0
+                kmsKey:
+                  arn: ''
+                volumeSize: 120
+                volumeType: gp2
+          securityGroups:
+            - filters:
+                - name: 'tag:Name'
+                  values:
+                    - mpto-fpjwc-worker-sg
+          kind: AWSMachineProviderConfig
+          tags:
+            - name: kubernetes.io/cluster/mpto-fpjwc
+              value: owned
+          deviceIndex: 0
+          ami:
+            id: ami-0ba8d5168e13bbcce
+          subnet:
+            filters:
+              - name: 'tag:Name'
+                values:
+                  - mpto-fpjwc-private-us-east-2a
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          iamInstanceProfile:
+            id: mpto-fpjwc-worker-profile
