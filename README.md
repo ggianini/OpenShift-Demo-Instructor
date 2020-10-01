@@ -269,3 +269,29 @@ while true; do wget -q -O- <url>; done
 * `oc delete hpa app`
 
 ## 10) Monitoramento e Logging
+
+* Provisionar machineset m4.2xlarge
+
+* Instalar Operators "elasticsearch" e "cluster logging", provisionar CRD com ZeroRedundancy e Node = 1
+
+Vamos criar uma vista personalizada dos nossos logs, para isso posicione o cursor do mouse sobre os campos a seguir e clique em "add":
+
+```
+	Time
+ hostname
+ kubernetes.namespace_name
+ kubernetes.container_name	
+ message
+```
+```json
+{
+  "query": {
+    "match": {
+      "message": {
+        "query": "server reached MaxRequestWorkers setting, consider raising the MaxRequestWorkers setting",
+        "type": "phrase"
+      }
+    }
+  }
+}
+```
