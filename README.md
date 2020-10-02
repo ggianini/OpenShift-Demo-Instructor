@@ -5,6 +5,29 @@
   * [Repositorio com varias demos](https://github.com/redhat-developer-demos)
   * [Deploy](https://docs.google.com/presentation/d/1rtbk08RyuVxkFHhfMhAFb6FooMWLXrwDmhgLgcG8ML8)
 
+## 0) Criar usuário admin
+
+[Configuring an HTPasswd identity provider](https://docs.openshift.com/container-platform/4.5/authentication/identity_providers/configuring-htpasswd-identity-provider.html)
+
+** Criar Identity Provider HTPasswd
+* Administration → Cluster Settings → Global Configuration → OAuth
+
+** Criar arquivo com as credenciais
+* htpasswd -c -B -b users.htpasswd ggianini redhat
+
+** Acessar console
+
+* Explicar linha de comando OC
+
+```sh
+oc get route -n openshift-console
+```
+
+[Using RBAC to define and apply permissions](https://docs.openshift.com/container-platform/4.5/authentication/using-rbac.html)
+
+
+oc adm policy add-cluster-role-to-user cluster-admin ggianini
+
 
 ## 1) Criar código da app e colocar no github
 
@@ -71,7 +94,7 @@ ALTER USER 'redhat' IDENTIFIED WITH mysql_native_password BY 'redhat';
  * Importar a tabela sql
 
 ```
-mysql -u admin -h 127.0.0.1 -p redhat
+mysql -u redhat -h 127.0.0.1 -p
 
 SHOW DATABASES;
 USE sampledb;
