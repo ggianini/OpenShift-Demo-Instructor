@@ -5,24 +5,24 @@ metadata:
     machine.openshift.io/GPU: '0'
     machine.openshift.io/memoryMb: '32768'
     machine.openshift.io/vCPU: '8'
-  name: mpto-fpjwc-worker-us-east-2a-big
+  name: machine-name-worker-us-east-2a-big
   generation: 3
   namespace: openshift-machine-api
   labels:
-    machine.openshift.io/cluster-api-cluster: mpto-fpjwc
+    machine.openshift.io/cluster-api-cluster: machine-name
 spec:
   replicas: 0
   selector:
     matchLabels:
-      machine.openshift.io/cluster-api-cluster: mpto-fpjwc
-      machine.openshift.io/cluster-api-machineset: mpto-fpjwc-worker-us-east-2a-big
+      machine.openshift.io/cluster-api-cluster: machine-name
+      machine.openshift.io/cluster-api-machineset: machine-name-worker-us-east-2a-big
   template:
     metadata:
       labels:
-        machine.openshift.io/cluster-api-cluster: mpto-fpjwc
+        machine.openshift.io/cluster-api-cluster: machine-name
         machine.openshift.io/cluster-api-machine-role: worker
         machine.openshift.io/cluster-api-machine-type: worker
-        machine.openshift.io/cluster-api-machineset: mpto-fpjwc-worker-us-east-2a-big
+        machine.openshift.io/cluster-api-machineset: machine-name-worker-us-east-2a-big
     spec:
       metadata: {}
       providerSpec:
@@ -49,10 +49,10 @@ spec:
             - filters:
                 - name: 'tag:Name'
                   values:
-                    - mpto-fpjwc-worker-sg
+                    - machine-name-worker-sg
           kind: AWSMachineProviderConfig
           tags:
-            - name: kubernetes.io/cluster/mpto-fpjwc
+            - name: kubernetes.io/cluster/machine-name
               value: owned
           deviceIndex: 0
           ami:
@@ -61,7 +61,7 @@ spec:
             filters:
               - name: 'tag:Name'
                 values:
-                  - mpto-fpjwc-private-us-east-2a
+                  - machine-name-private-us-east-2a
           apiVersion: awsproviderconfig.openshift.io/v1beta1
           iamInstanceProfile:
-            id: mpto-fpjwc-worker-profile
+            id: machine-name-worker-profile
