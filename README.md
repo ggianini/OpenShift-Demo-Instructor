@@ -121,6 +121,12 @@ INSERT INTO cidade (id,nome) VALUES(3,"Vitoria");
 
 SELECT * FROM cidade;
 ```
+## Criando imagem personalizada no Catálogo
+
+```
+oc create -f meucrd.yaml
+```
+
 ## 5) Webhook e Rsync
 
 ### 5.1) Webhook
