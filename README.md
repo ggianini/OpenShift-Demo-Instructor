@@ -13,7 +13,9 @@
 * Administration → Cluster Settings → Global Configuration → OAuth
 
 ** Criar arquivo com as credenciais
-* htpasswd -c -B -b users.htpasswd ggianini redhat
+```sh
+htpasswd -c -B -b users.htpasswd ggianini redhat
+```
 
 ** Acessar console
 
@@ -25,9 +27,9 @@ oc get route -n openshift-console
 
 [Using RBAC to define and apply permissions](https://docs.openshift.com/container-platform/4.5/authentication/using-rbac.html)
 
-
+```sh
 oc adm policy add-cluster-role-to-user cluster-admin ggianini
-
+```
 
 ## 1) Criar código da app e colocar no github
 
