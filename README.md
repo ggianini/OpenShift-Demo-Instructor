@@ -9,13 +9,15 @@
 
 - Mostrar cloud.redhat.com
 	- Billing, Insights, Ansible, etc.
+	
+> User: cost-user
+
+> Password: cost4User
+
 
 - Update
 - Provisionamento de node (ao final se der tempo)
 - Storage
-
-> User: cost-user
-> Password: cost4User
 
 ## 0) Criar usuário admin
 
