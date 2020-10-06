@@ -10,6 +10,9 @@
 ** Mostrar cloud.redhat.com
 ** Billing, Insights, Ansible, etc.
 
+User: cost-user
+Password: cost4User
+
 ## 0) Criar usuário admin
 
 [Configuring an HTPasswd identity provider](https://docs.openshift.com/container-platform/4.5/authentication/identity_providers/configuring-htpasswd-identity-provider.html)
