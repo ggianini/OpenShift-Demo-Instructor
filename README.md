@@ -8,7 +8,11 @@
 ## Opcionais
 
 ** Mostrar cloud.redhat.com
-** Billing, Insights, Ansible, etc.
+* Billing, Insights, Ansible, etc.
+
+** Update
+** Mostrar provisionamento de node (ao final se der tempo)
+** Storage
 
 User: cost-user
 Password: cost4User
@@ -334,3 +338,5 @@ Vamos criar uma vista personalizada dos nossos logs, para isso posicione o curso
   }
 }
 ```
+
+** Mostrar provisionamento de node
