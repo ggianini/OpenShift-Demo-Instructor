@@ -7,8 +7,8 @@
 
 ## Opcionais
 
-** Mostrar cloud.redhat.com
-* Billing, Insights, Ansible, etc.
+- Mostrar cloud.redhat.com
+	- Billing, Insights, Ansible, etc.
 
 ** Update
 ** Mostrar provisionamento de node (ao final se der tempo)
