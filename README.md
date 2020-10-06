@@ -5,6 +5,11 @@
   * [Repositorio com varias demos](https://github.com/redhat-developer-demos)
   * [Deploy](https://docs.google.com/presentation/d/1rtbk08RyuVxkFHhfMhAFb6FooMWLXrwDmhgLgcG8ML8)
 
+## Opcionais
+
+** Mostrar cloud.redhat.com
+** Billing, Insights, Ansible, etc.
+
 ## 0) Criar usuário admin
 
 [Configuring an HTPasswd identity provider](https://docs.openshift.com/container-platform/4.5/authentication/identity_providers/configuring-htpasswd-identity-provider.html)
