@@ -1,0 +1,115 @@
+= Openshift Installation using minimum resource
+
+== Fix etcd
+
+[source,bash]
+----
+oc patch \
+   etcd \
+   cluster \
+   -p='{"spec": {"unsupportedConfigOverrides": {"useUnsupportedUnsafeNonHANonProductionUnstableEtcd": true}}}' \
+   --type=merge
+----
+
+[source,bash]
+----
+oc patch clusterversion version --type json -p "$(cat <<- EOF
+- op: add
+  path: /spec/overrides
+  value:
+  - kind: Deployment
+    group: apps/v1
+    name: etcd-quorum-guard
+    namespace: openshift-machine-config-operator
+    unmanaged: true
+EOF
+)"
+----
+
+[source,bash]
+----
+oc scale --replicas=1 deployment/etcd-quorum-guard -n openshift-machine-config-operator
+----
+
+== Change instance type
+
+AWS M5a
+
+== Scale Registry down
+
+[source,bash]
+----
+oc patch configs.imageregistry.operator.openshift.io cluster -p='{"spec": {"replicas": 1}}' --type=merge
+----
+
+== Scale Router down
+
+[source,bash]
+----
+oc patch ingresses.config.openshift.io cluster -p='{"spec": {"replicas": 1}}' --type=merge
+oc scale --replicas=1 deployment/router-default -n openshift-ingress
+----
+
+== Scale monitoring down
+
+[source,bash]
+----
+oc patch clusterversion version --type json -p "$(cat <<- EOF
+- op: add
+  path: /spec/overrides
+  value:
+  - kind: Deployment
+    group: apps/v1
+    name: prometheus-operator
+    namespace: openshift-monitoring
+    unmanaged: true
+  - kind: Deployment
+    group: apps/v1
+    name: etcd-quorum-guard
+    namespace: openshift-machine-config-operator
+    unmanaged: true
+  - kind: Deployment
+    group: apps/v1
+    name: cluster-monitoring-operator
+    namespace: openshift-monitoring
+    unmanaged: true
+  - kind: Deployment
+    group: apps/v1
+    name: prometheus-adapter
+    namespace: openshift-monitoring
+    unmanaged: true
+EOF
+)"
+----
+
+== Add spot instance
+
+[source,yaml]
+----
+
+providerSpec:
+  value:
+    spotMarketOptions:
+      maxPrice: '0.0225'
+----
+
+[source,bash]
+----
+oc scale --replicas=1 deployment/etcd-quorum-guard -n openshift-machine-config-operator
+oc scale --replicas=1 ingresscontroller/default -n openshift-ingress-operator
+oc scale --replicas=1 deployment.apps/console -n openshift-console
+oc scale --replicas=1 deployment.apps/downloads -n openshift-console
+oc scale --replicas=1 deployment.apps/oauth-openshift -n openshift-authentication
+oc scale --replicas=1 deployment.apps/packageserver -n openshift-operator-lifecycle-manager
+
+oc scale sts --replicas=1 --all -n openshift-monitoring
+oc scale deploy prometheus-operator --replicas=0
+oc scale deploy cluster-monitoring-operator --replicas=0
+oc scale deploy prometheus-adapter --replicas=1
+oc scale deploy thanos-querier --replicas=1
+
+oc scale deploy image-registry --replicas=1 -n openshift-image-registry
+oc scale deploy console --replicas=1 -n openshift-console
+oc scale deploy downloads --replicas=1 -n openshift-console
+oc scale deploy oauth-openshift --replicas=1 -n openshift-authentication
+----
