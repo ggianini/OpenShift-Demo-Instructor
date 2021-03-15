@@ -300,6 +300,12 @@ oc delete po <pod>
 oc autoscale dc/meu-app --min 1 --max 10 --cpu-percent=10
 ```
 
+- monitore
+
+```
+watch oc get hpa
+```
+
 - inicia stress
 
 ```
