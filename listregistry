@@ -1,0 +1,9 @@
+# https://access.redhat.com/solutions/5177301
+
+oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+TOKEN=$(oc whoami -t)
+curl -k -H "Authorization: Bearer ${TOKEN}" "https://default-route-openshift-image-registry.apps.<clusterid>.<domain>/v2/_catalog" | jq .
+
+# List all tags from specific image
+
+curl -k -H "Authorization: Bearer ${TOKEN}" "https://default-route-openshift-image-registry.apps.<clusterid>.<domain>/v2/<repository>/<image>/tags/list" | jq .
