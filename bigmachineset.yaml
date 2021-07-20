@@ -1,67 +1,64 @@
+# To get ami id: oc -n openshift-machine-api -o jsonpath='{.spec.template.spec.providerSpec.value.ami.id}{"\n"}' get machineset/<infrastructureID>-worker-us-east-2a
+
 apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
 metadata:
-  annotations:
-    machine.openshift.io/GPU: '0'
-    machine.openshift.io/memoryMb: '32768'
-    machine.openshift.io/vCPU: '8'
-  name: machine-name-worker-us-east-2a-big
-  generation: 3
-  namespace: openshift-machine-api
   labels:
-    machine.openshift.io/cluster-api-cluster: machine-name
+    machine.openshift.io/cluster-api-cluster: clustername-abcde 
+  name: clustername-abcde-worker-us-east-2a-big
+  namespace: openshift-machine-api
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
-      machine.openshift.io/cluster-api-cluster: machine-name
-      machine.openshift.io/cluster-api-machineset: machine-name-worker-us-east-2a-big
+      machine.openshift.io/cluster-api-cluster: clustername-abcde 
+      machine.openshift.io/cluster-api-machineset: clustername-abcde-worker-us-east-2a-big 
   template:
     metadata:
       labels:
-        machine.openshift.io/cluster-api-cluster: machine-name
-        machine.openshift.io/cluster-api-machine-role: worker
-        machine.openshift.io/cluster-api-machine-type: worker
-        machine.openshift.io/cluster-api-machineset: machine-name-worker-us-east-2a-big
+        machine.openshift.io/cluster-api-cluster: clustername-abcde 
+        machine.openshift.io/cluster-api-machine-role: worker 
+        machine.openshift.io/cluster-api-machine-type: worker 
+        machine.openshift.io/cluster-api-machineset: clustername-abcde-worker-us-east-2a-big 
     spec:
-      metadata: {}
+      metadata:
+        labels:
+          node-role.kubernetes.io/worker: "" 
+      taints: 
+        - key: node-role.kubernetes.io/worker
+          effect: NoSchedule
       providerSpec:
         value:
-          userDataSecret:
-            name: worker-user-data
+          ami:
+            id: <get-ami>
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+            - ebs:
+                iops: 0
+                volumeSize: 120
+                volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: clustername-abcde-worker-profile 
+          instanceType: m4.2xlarge
+          kind: AWSMachineProviderConfig
           placement:
             availabilityZone: us-east-2a
             region: us-east-2
-          credentialsSecret:
-            name: aws-cloud-credentials
-          instanceType: m4.2xlarge
-          metadata:
-            creationTimestamp: null
-          blockDevices:
-            - ebs:
-                encrypted: true
-                iops: 0
-                kmsKey:
-                  arn: ''
-                volumeSize: 120
-                volumeType: gp2
           securityGroups:
             - filters:
-                - name: 'tag:Name'
+                - name: tag:Name
                   values:
-                    - machine-name-worker-sg
-          kind: AWSMachineProviderConfig
-          tags:
-            - name: kubernetes.io/cluster/machine-name
-              value: owned
-          deviceIndex: 0
-          ami:
-            id: ami-0ba8d5168e13bbcce
+                    - clustername-abcde-worker-sg 
           subnet:
             filters:
-              - name: 'tag:Name'
+              - name: tag:Name
                 values:
-                  - machine-name-private-us-east-2a
-          apiVersion: awsproviderconfig.openshift.io/v1beta1
-          iamInstanceProfile:
-            id: machine-name-worker-profile
+                  - clustername-abcde-private-us-east-2a 
+          tags:
+            - name: kubernetes.io/cluster/clustername-abcde 
+              value: owned
+          userDataSecret:
+            name: worker-user-data
