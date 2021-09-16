@@ -1,3 +1,22 @@
+<p align="center">
+    <img alt="Logo OpenShift" height="100" src="logo.png">
+</p>
+
+<h1 align="center">
+    Demo Guide
+</h1>
+
+<h2 align="center">
+    OpenShift demonstration
+</h2>
+
+<p align="center">
+    <img alt="Made By" src="https://img.shields.io/badge/Made%20By-Hugo%20Pfeffer-blueviolet?style=for-the-badge&logo=appveyor">
+    <img alt="Made By" src="https://img.shields.io/badge/Made%20By-Gustavo%20Gianini-blueviolet?style=for-the-badge&logo=appveyor">
+    <img alt="Made By" src="https://img.shields.io/badge/License-GPL%203.0-blue?style=for-the-badge">
+</p>
+<br>
+
 # OpenShift-Demo
 
 ### Demos
