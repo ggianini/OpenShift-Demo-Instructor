@@ -5,7 +5,7 @@
   * [Repositorio com varias demos](https://github.com/redhat-developer-demos)
   * [Deploy](https://docs.google.com/presentation/d/1rtbk08RyuVxkFHhfMhAFb6FooMWLXrwDmhgLgcG8ML8)
 
-## Opcionais
+## ♢ Opcionais
 
 - Mostrar cloud.redhat.com
  - Billing, Insights, Ansible, etc.
@@ -18,6 +18,12 @@
 - Update
 - Provisionamento de node (ao final se der tempo)
 - Storage
+- Variável de ambiente para facilitar copy-paste dos códigos
+```sh
+url = <cluster-url>
+```
+
+<br>
 
 ## 0) Criar usuário admin
 
@@ -45,6 +51,8 @@ oc get route -n openshift-console
 oc adm policy add-cluster-role-to-user cluster-admin ggianini
 ```
 
+<br>
+
 ## 1) Criar código da app e colocar no github
 
 - criar um novo repositório no Git
@@ -58,10 +66,14 @@ echo $_SERVER['SERVER_ADDR']
 ?>
 ```
 
+<br>
+
 ## 2) Criar app no Openshift
 
 - Mostrar em que Node do cluster que ela foi provisionada
 - Mostrar metricas, log, eventos, variaveis de ambiente, etc
+
+<br>
 
 ## 3) Escalar app
 
@@ -69,7 +81,7 @@ echo $_SERVER['SERVER_ADDR']
 - Mostrar o balanceamento de carga
 	- via curl
 ```bash
-while [ true ]; do curl http://myphp-php-demo.apps.ocp.acme.com/; sleep 1; echo; done
+while [ true ]; do curl $url; sleep 1; echo; done
 ```
 
 ```
@@ -87,6 +99,8 @@ oc delete pod --force <id1> <id2>
 ```
 
 * Escalar para 1 instancia
+
+<br>
 
 ## 4) Criar um banco de dados
 
@@ -128,15 +142,17 @@ SELECT * FROM cidade;
 ## Criando imagem personalizada no Catálogo
 
 ```
-oc create -f meucrd.yaml
+oc create -f nodejs-template-example.yaml
 ```
+
+<br>
 
 ## 5) Webhook e Rsync
 
 ### 5.1) Webhook
 
 - Configurar código fonte do DB
-```
+```php
 <?php
 echo "<h1 style='color:blue;'>OpenShift Demo v2.0</h1> ";
 echo $_SERVER['SERVER_ADDR'];
@@ -162,6 +178,8 @@ $conn->close();
 ?>
 ```
 
+<br>
+
 ### 5.2) Rsync
 
 - Permite copiar arquivos diretamente via rsync para dentro do Container (POD). Não recomendado devido a natureza efêmera do POD!
@@ -171,18 +189,22 @@ $conn->close();
 git clone --single-branch --branch minhabranch https://github.com/ggianini/minhademo.git
 
 
-```
+```sh
     oc rsync --exclude '.git' . pod-id:/opt/app-root/src --no-perms -w
 ```
+
+<br>
 
 ## 6) Health Check e Debug
 
 * Escalar para 2 instancias
 
-```
-while [ true ]; do curl http://myphp-php-demo.apps.ocp.acme.com/; sleep 1; echo; done
+```sh
+while [ true ]; do curl $url; sleep 1; echo; done
 ```
 > The two probes have two separate purposes and start running as soon as the container is started
+
+<br>
 
 ### 6.1 Liveness
 
@@ -190,7 +212,7 @@ while [ true ]; do curl http://myphp-php-demo.apps.ocp.acme.com/; sleep 1; echo;
 
 - Criar pagina liveness.php
 
-```
+```php
 <?php
 $filename = '/tmp/liveness';
 
@@ -204,8 +226,17 @@ if (file_exists($filename)) {
         echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá deletar o pod";
 }
 ?>
-
 ```
+```sh
+oc set probe deploy/app-v2 --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
+```
+Ou via interface gráfica:
+
+/liveness.php
+8080
+3 1 20 10 1
+
+<br>
 
 ### 6.2 readiness
 
@@ -213,7 +244,7 @@ if (file_exists($filename)) {
 
 - Criar a pagina readiness.php
 
-```
+```php
 <?php
 $filename = '/tmp/readiness';
 
@@ -228,8 +259,8 @@ if (file_exists($filename)) {
 }
 ?>
 ```
-```
-oc set probe deploy/meu-app --readiness --get-url=http://:8080/readiness.php
+```sh
+oc set probe deploy/app-v2 --readiness --get-url=http://:8080/readiness.php
 ```
 
 Ou via interface gráfica:
@@ -238,18 +269,13 @@ Ou via interface gráfica:
 8080
 3 1 null 10 1
 
-/liveness.php
-8080
-3 1 20 10 1
-
-```
-oc set probe deploy/meu-app --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
-```
+<br>
+<hr>
 
 * Fazer debug do container com readiness
  * acessar um dos PODs
 
-```
+```sh
 oc rsh <pod id>
 
 > touch /tmp/readiness
@@ -259,6 +285,8 @@ oc rsh <pod id>
 
 - Criar /tmp/liveness
 
+<br>
+
 ## 7) Idle resources
 
 - Parar o `while [ true ]; do curl ...` - INATIVIDADE!
@@ -266,13 +294,15 @@ oc rsh <pod id>
  - observar status dos PODs na console
  - Acessar a URL da app
 
+<br>
+
 ## 8) Resource Quotas
 
 - Escalar para 1
 - Colocar limit e request de memoria e cpu
 
- ```
-oc set resources deploy/meu-app --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
+ ```sh
+oc set resources deploy/app-v2 --limits=cpu=200m,memory=100Mi --requests=cpu=200m,memory=100Mi
 ```
 
 * criar novo arquivo forkbomb.php
@@ -288,34 +318,38 @@ $output = shell_exec("while :; do _+=( $((++__)) ); done");
  * Esperar ele matar o container
  * Observe as métricas na console do POD!
 
-```
+```sh
 oc delete po <pod>
 ```
+
+<br>
 
 ## 9) Auto scaling de deploymentconfig
 
 - add auto scaler
 
-```
-oc autoscale deploy/meu-app --min 1 --max 10 --cpu-percent=10
+```sh
+oc autoscale deploy/app-v2 --min 1 --max 10 --cpu-percent=10
 ```
 
 - monitore
 
-```
+```sh
 watch oc get hpa
 ```
 
 - inicia stress
 
-```
+```sh
 oc run --generator=run-pod/v1 -it --rm load-generator --image=busybox /bin/sh
 ```
-```
+```sh
 while true; do wget -q -O- <url>; done
 ```
 
 - `oc delete hpa app`
+
+<br>
 
 ## 10) Monitoramento e Logging
 

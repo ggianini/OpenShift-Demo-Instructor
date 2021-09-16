@@ -2,23 +2,23 @@
   "kind": "Template",
   "apiVersion": "v1",
   "metadata": {
-    "name": "my-new-nodejs-example",
+    "name": "my-new-template-test-example",
     "annotations": {
-      "openshift.io/display-name": "Node.js-Personalizado",
-      "description": "Personalização! - An example Node.js application with no database. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/nodejs-ex/blob/master/README.md.",
-      "tags": "quickstart,nodejs",
-      "iconClass": "icon-nodejs",
-      "openshift.io/long-description": "Personalização! This template defines resources needed to develop a NodeJS application, including a build configuration and application deployment configuration.  It does not include a database.",
+      "openshift.io/display-name": "Template Customizado",
+      "description": "Este é um template customizado, utilizado para fins demonstrativos.",
+      "tags": "quickstart,template-test",
+      "iconClass": "icon-other-linux",
+      "openshift.io/long-description": "Template baseado no template de NodeJS do catálogo.",
       "openshift.io/provider-display-name": "Red Hat, Inc.",
       "openshift.io/documentation-url": "https://github.com/sclorg/nodejs-ex",
       "openshift.io/support-url": "https://access.redhat.com",
       "template.openshift.io/bindable": "false"
     }
   },
-  "message": "Personalização! - The following service(s) have been created in your project: ${NAME}.\n\nFor more information about using this template, including OpenShift considerations, see https://github.com/sclorg/nodejs-ex/blob/master/README.md.",
+  "message": "Personalização! - The following service(s) have been created in your project: ${NAME}.\n\nFor more information about using this template, including OpenShift considerations, see https://github.com/sclorg/template-test-ex/blob/master/README.md.",
   "labels": {
-      "template": "nodejs-example",
-      "app": "nodejs-example"
+      "template": "template-test-example",
+      "app": "template-test-example"
   },
   "objects": [
     {
