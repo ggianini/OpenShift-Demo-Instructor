@@ -106,20 +106,6 @@ while [ true ]; do curl $url; sleep 1; echo; done
 ```
 oc get po -o wide
 ```
-- Mostrar as metricas agregadas:
-- Mostrar pod isolation: **remove do balanceamento!**
-
-> escolher um POD, editar o YAML e mudar o label `deploymentconfig`
-
-- Tentar matar dois containers da aplicação
- - via CLI
-```
-oc delete pod --force <id1> <id2>
-```
-
-* Escalar para 1 instancia
-
-<br>
 
 ## 4) Criar um banco de dados
 
@@ -229,23 +215,7 @@ while [ true ]; do curl $url; sleep 1; echo; done
 
 > Liveness means your container is running, and if it fails then the container should be restarted.
 
-- Criar pagina liveness.php
 
-```php
-<?php
-$filename = '/tmp/liveness';
-
-if (file_exists($filename)) {
-    header("HTTP/1.1 500 Internal Server Error");
-} else {
-        echo "Estou vivo!";
-        echo "<br><hr>";
-        echo "Essa mensagem significa que a aplicação está saudável.";
-        echo "<br><hr>";
-        echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá deletar o pod";
-}
-?>
-```
 ```sh
 oc set probe deploy/app-v2 --initial-delay-seconds=20 --liveness --get-url=http://:8080/liveness.php
 ```
@@ -261,23 +231,7 @@ Ou via interface gráfica:
 
 > Readiness means your service is ready to receive requests, so should be added to the service rotation.
 
-- Criar a pagina readiness.php
 
-```php
-<?php
-$filename = '/tmp/readiness';
-
-if (file_exists($filename)) {
-    header("HTTP/1.1 500 Internal Server Error");
-} else {
-        echo "Estou pronto!";
-        echo "<br><hr>";
-        echo "Essa mensagem significa que a aplicação está pronta para ser inserida no balanceamento.";
-        echo "<br><hr>";
-        echo "Caso essa URL devolva um erro 500, significa que o liveness falhou. Nesse caso o OpenShift irá remover a aplicação do balanceador.";
-}
-?>
-```
 ```sh
 oc set probe deploy/app-v2 --readiness --get-url=http://:8080/readiness.php
 ```
