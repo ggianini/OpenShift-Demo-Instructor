@@ -251,12 +251,12 @@ Ou via interface gráfica:
 ```sh
 oc rsh <pod id>
 
-> touch /tmp/readiness
+> touch /tmp/falha-dependencia
 ```
 
 - observar Página Overview do projeto na console do ocp
 
-- Criar /tmp/liveness
+- Criar /tmp/falha
 
 <br>
 
