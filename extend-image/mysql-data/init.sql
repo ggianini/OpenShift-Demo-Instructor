@@ -1,4 +1,6 @@
-CREATE TABLE products (id INTEGER, name VARCHAR(256), price FLOAT, variant INTEGER);
-CREATE TABLE products_variant (id INTEGER, name VARCHAR(256));
-INSERT INTO products_variant (id, name) VALUES ('1', 'blue'), ('2', 'green');
+CREATE TABLE cidade (id INT NOT NULL, nome VARCHAR(50) NOT NULL, PRIMARY KEY (id));
 
+
+INSERT INTO cidade (id,nome) VALUES(1,"Rio de Janeiro");
+INSERT INTO cidade (id,nome) VALUES(2,"Brasilia");
+INSERT INTO cidade (id,nome) VALUES(3,"Vitoria");
