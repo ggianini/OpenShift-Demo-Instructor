@@ -1,9 +1,9 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: mysql-persistent-teste
+  name: mysql-persistent
   annotations:
-    openshift.io/display-name: MySQL (teste)
+    openshift.io/display-name: MySQL Teste  
     description: >-
       MySQL database service, with persistent storage. For more information
       about using this template, including OpenShift considerations, see
@@ -46,17 +46,11 @@ objects:
         template.openshift.io/expose-password: '{.data[''database-password'']}'
         template.openshift.io/expose-root_password: '{.data[''database-root-password'']}'
         template.openshift.io/expose-database_name: '{.data[''database-name'']}'
-        template.openshift.io/expose-context-dir: '{.data[''context-dir'']}'
-        template.openshift.io/expose-database-opuser: '{.data[''database-opuser'']}'
-        template.openshift.io/expose-database-oppass: '{.data[''database-oppass'']}'
     stringData:
       database-user: '${MYSQL_USER}'
       database-password: '${MYSQL_PASSWORD}'
       database-root-password: '${MYSQL_ROOT_PASSWORD}'
       database-name: '${MYSQL_DATABASE}'
-      context-dir: '${CONTEXT_DIR}'
-      database-opuser: '${MYSQL_OPERATIONS_USER}'
-      database-oppass: '${MYSQL_OPERATIONS_PASSWORD}'
   - kind: Service
     apiVersion: v1
     metadata:
@@ -151,21 +145,6 @@ objects:
                     secretKeyRef:
                       name: '${DATABASE_SERVICE_NAME}'
                       key: database-name
-                - name: CONTEXT_DIR
-                  valueFrom:
-                    secretKeyRef:
-                      name: '${DATABASE_SERVICE_NAME}'
-                      key: context-dir
-                - name: MYSQL_OPERATIONS_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: '${DATABASE_SERVICE_NAME}'
-                      key: database-opuser
-                - name: MYSQL_OPERATIONS_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: '${DATABASE_SERVICE_NAME}'
-                      key: database-oppass
               resources:
                 limits:
                   memory: '${MEMORY_LIMIT}'
@@ -224,19 +203,4 @@ parameters:
     displayName: Version of MySQL Image
     description: 'Version of MySQL image to be used (8.0-el7, 8.0-el8, or latest).'
     value: 8.0-el8
-    required: true
-  - name: CONTEXT_DIR
-    displayName: Context directory
-    description: 'Context directory where the extended-image files are located.'
-    value: ''
-    required: false
-  - name: MYSQL_OPERATIONS_USER
-    displayName: Operations User
-    description: 'Opertaions User'
-    value: opuser
-    required: true
-  - name: MYSQL_OPERATIONS_PASSWORD
-    displayName: Operations Password
-    description: 'Operations Password'
-    value: oppass
     required: true

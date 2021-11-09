@@ -1,4 +1,4 @@
-FROM ubi8/s2i-core:rhel8.4
+FROM ubi8/s2i-core
 
 # MySQL image for OpenShift.
 #
@@ -14,8 +14,11 @@ ENV MYSQL_VERSION=8.0 \
     APP_DATA=/opt/app-root/src \
     HOME=/var/lib/mysql
 
-ENV SUMMARY="MySQL 8.0 SQL populated" \
-    DESCRIPTION="This images is based on the official image curated by Red Hat of MySQL. It was made for demo purposes"
+ENV SUMMARY="MySQL 8.0 SQL database server" \
+    DESCRIPTION="MySQL is a multi-user, multi-threaded SQL database server. The container \
+image provides a containerized packaging of the MySQL mysqld daemon and client application. \
+The mysqld server daemon accepts connections from clients and provides access to content from \
+MySQL databases on behalf of the clients."
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
@@ -27,7 +30,7 @@ LABEL summary="$SUMMARY" \
       name="rhel8/mysql-80" \
       version="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#rhel" \
-      usage="podman run -d -e MYSQL_USER=redhat -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=sample-db -p 3306:3306 rhel8/mysql-80" \
+      usage="podman run -d -e MYSQL_USER=user -e MYSQL_PASSWORD=pass -e MYSQL_DATABASE=db -p 3306:3306 rhel8/mysql-80" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 EXPOSE 3306
@@ -67,4 +70,3 @@ USER 27
 
 ENTRYPOINT ["container-entrypoint"]
 CMD ["run-mysqld"]
-
