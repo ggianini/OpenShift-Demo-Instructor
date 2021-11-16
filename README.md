@@ -122,6 +122,17 @@ oc delete pod --force <id1> <id2>
 <br>
 
 ## 4) Criar um banco de dados
+---
+## 4.1) Opcional - Criar Banco de Dados a partir do Template
+```sh
+oc tag quay.io/hpfeffer/mysql-template:openshift mysql:populated
+```
+
+* While creating the template, put `populated` on the ImageStream with all the other information.
+
+<br>
+
+---
 
 - Criar MySQL a pertir do catálogo
 
