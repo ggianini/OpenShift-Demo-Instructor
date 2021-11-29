@@ -20,6 +20,7 @@ metadata:
 
       NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
     iconClass: icon-mysql-database
+    iconClass: fa fa-server 
     openshift.io/display-name: MySQL (Populado)
     openshift.io/documentation-url: https://docs.okd.io/latest/using_images/db_images/mysql.html
     openshift.io/long-description: This image and template are based on the official template from Red Hat Catalog. This template was created for demonstration purposes.
@@ -36,7 +37,7 @@ metadata:
   labels:
     samples.operator.openshift.io/managed: "true"
   name: mysql-persistent-populated
-  namespace: openshift
+  # namespace: openshift
   resourceVersion: "14741"
   uid: 905f610c-1ef3-4c3a-8fc8-b0c508621cce
 objects:
@@ -49,6 +50,7 @@ objects:
       template.openshift.io/expose-root_password: '{.data[''database-root-password'']}'
       template.openshift.io/expose-username: '{.data[''database-user'']}'
       template.openshift.io/expose-context: '{.data[''context-dir'']}'
+      template.openshift.io/expose-git_source: '{.data[''git-source'']}'
     name: ${DATABASE_SERVICE_NAME}
   stringData:
     database-name: ${MYSQL_DATABASE}
@@ -56,44 +58,91 @@ objects:
     database-root-password: ${MYSQL_ROOT_PASSWORD}
     database-user: ${MYSQL_USER}
     context-dir: ${MYSQL_CONTEXT}
-- apiVersion: v1
-  kind: Service
+    git-source: ${GIT_SOURCE}
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
   metadata:
     annotations:
-      template.openshift.io/expose-uri: mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mysql")].port}
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/component: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/instance: ${DATABASE_SERVICE_NAME}
     name: ${DATABASE_SERVICE_NAME}
   spec:
-    ports:
-    - name: mysql
-      port: 3306
-    selector:
-      name: ${DATABASE_SERVICE_NAME}
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: ${DATABASE_SERVICE_NAME}
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: ${VOLUME_CAPACITY}
-- apiVersion: v1
-  kind: DeploymentConfig
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
   metadata:
     annotations:
-      template.alpha.openshift.io/wait-for-ready: "true"
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/component: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/instance: ${DATABASE_SERVICE_NAME}
+    name: ${DATABASE_SERVICE_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${DATABASE_SERVICE_NAME}:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: extend-image
+      git:
+        uri: ${GIT_SOURCE}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: mysql:8.0
+          namespace: ${NAMESPACE}
+      type: Source
+    triggers:
+    - github:
+        secret: HiPNKWLuvWKKf6gRu_He
+      type: GitHub
+    - generic:
+        secret: 5SO9GJoxgsVC5kn0p9MM
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"${DATABASE_SERVICE_NAME}:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${DATABASE_SERVICE_NAME}\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/component: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/instance: ${DATABASE_SERVICE_NAME}
     name: ${DATABASE_SERVICE_NAME}
   spec:
     replicas: 1
     selector:
-      name: ${DATABASE_SERVICE_NAME}
-    strategy:
-      type: Recreate
+      matchLabels:
+        deployment: ${DATABASE_SERVICE_NAME}
+    strategy: {}
     template:
       metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
         labels:
-          name: ${DATABASE_SERVICE_NAME}
+          deployment: ${DATABASE_SERVICE_NAME}
       spec:
         containers:
         - env:
@@ -155,17 +204,40 @@ objects:
         - name: ${DATABASE_SERVICE_NAME}-data
           persistentVolumeClaim:
             claimName: ${DATABASE_SERVICE_NAME}
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - mysql
-        from:
-          kind: ImageStreamTag
-          name: mysql:${MYSQL_VERSION}
-          namespace: ${NAMESPACE}
-      type: ImageChange
-    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-uri: mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mysql")].port}
+    creationTimestamp: null
+    labels:
+      app: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/component: ${DATABASE_SERVICE_NAME}
+      app.kubernetes.io/instance: ${DATABASE_SERVICE_NAME}
+    name: ${DATABASE_SERVICE_NAME}
+  spec:
+    ports:
+    - name: 3306-tcp
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      deployment: ${DATABASE_SERVICE_NAME}
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: ${DATABASE_SERVICE_NAME}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY}
+
 parameters:
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
@@ -214,6 +286,11 @@ parameters:
   name: VOLUME_CAPACITY
   required: true
   value: 1Gi
+- description: Git Source
+  displayName: Git Source
+  name: GIT_SOURCE
+  required: true
+  value: https://github.com/HugoPfeffer/OpenShift-Demo-Instructor.git
 - description: Version of MySQL image to be used (8.0-el7, 8.0-el8, or latest).
   displayName: Version of MySQL Image
   name: MYSQL_VERSION
