@@ -4,18 +4,15 @@ labels:
   template: mysql-persistent-template
 message: |-
   The following service(s) have been created in your project: ${DATABASE_SERVICE_NAME}.
-
          Username: ${MYSQL_USER}
          Password: ${MYSQL_PASSWORD}
     Database Name: ${MYSQL_DATABASE}
    Connection URL: mysql://${DATABASE_SERVICE_NAME}:3306/
-
   For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/8.0/root/usr/share/container-scripts/mysql/README.md.
 metadata:
   annotations:
     description: |-
       MySQL database service, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/8.0/root/usr/share/container-scripts/mysql/README.md.
-
       NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
     iconClass: icon-mysql-database
     openshift.io/display-name: MySQL
