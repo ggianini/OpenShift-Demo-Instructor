@@ -38,9 +38,7 @@
 - Provisionamento de node (ao final se der tempo)
 - Storage
 - Variável de ambiente para facilitar copy-paste dos códigos
-```sh
-url = <cluster-url>
-```
+
 
 <br>
 
@@ -99,6 +97,10 @@ echo $_SERVER['SERVER_ADDR']
 - Mostrar novamente em que Node do cluster que ela foi provisionada
 - Mostrar o balanceamento de carga
 	- via curl
+```sh
+url = <cluster-url>
+```
+
 ```bash
 while [ true ]; do curl $url; sleep 1; echo; done
 ```
